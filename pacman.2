@@ -1,0 +1,299 @@
+#include <iostream>
+#include<Windows.h>
+#include<conio.h>
+#include <stdio.h>
+#include <thread>
+#define WID 17
+#define HEI 22
+#define GWID 10
+#define GHEI 15
+using namespace std;
+int o = 0;
+int x = 8;
+int y = 15;
+int gx = 14;
+int gy = 2;
+//                      필독 이윤성 제의한 3* 3 팩맨 (주의 갈려나감)
+int maintitle[HEI][WID] = { {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,},
+                        {0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,},
+                        {0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,},
+                        {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,},
+                        {0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,},
+                        {0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,},
+                        {0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,},
+                        {0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,},
+                        {0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,} };
+
+int map[HEI][WID] = { {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                       {1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
+                       {1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,0,1},
+                       {1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,0,1},
+                       {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                       {1,0,1,1,0,1,0,1,1,1,0,1,0,1,1,0,1},
+                       {1,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,1},
+                       {1,1,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1},
+                       {1,1,1,1,0,1,0,0,0,0,0,1,0,1,1,1,1},
+                       {1,1,1,1,0,1,0,1,0,1,0,1,0,1,1,1,1},
+                       {0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0},
+                       {1,1,1,1,0,1,0,0,0,0,0,1,0,1,1,1,1},
+                       {1,1,1,1,0,1,0,0,0,0,0,1,0,1,1,1,1},
+                       {1,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,1},
+                       {1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
+                       {1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1},
+                       {1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,1},
+                       {1,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,1},
+                       {1,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,1},
+                       {1,0,1,1,1,1,1,0,0,0,1,1,1,1,1,0,1},
+                       {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                       {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1} };
+int way = 0;        // 1 위 2 뒤 3 오른 4 왼
+
+int flag = 0;
+int colorflag = 0;
+enum colorName
+{
+    BLACK,
+    D_BLUE,
+    D_GREEN,
+    D_SKYBLUE,
+    D_RED,
+    D_VIOLET,
+    D_YELLOW,
+    GRAY,
+    D_GRAY,
+    BLUE,
+    GREEN,
+    SKYBLUE,
+    RED,
+    VIOLET,
+    YELLOW,
+    WHITE,
+};
+void CursorView(char show)//커서숨기기
+{
+    HANDLE hConsole;
+    CONSOLE_CURSOR_INFO ConsoleCursor;
+
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    ConsoleCursor.bVisible = show;
+    ConsoleCursor.dwSize = 1;
+
+    SetConsoleCursorInfo(hConsole, &ConsoleCursor);
+}
+
+void goToPoint(int x, int y) {
+    COORD Cur;
+    Cur.X = x;
+    Cur.Y = y;
+
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
+
+}
+void drw(int bgColor, int textColor) {
+    // goToPoint(x, y);
+
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bgColor * 16 + textColor);
+
+
+    //colorflag =1;
+
+/*
+else {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6);
+    printf("\b+");
+
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+    colorflag = 0;
+}   */
+}
+
+
+void mov(int key) {
+    if (key == 32 && o == 0) {
+        system("cls");
+        o = 1;
+    }
+    if (key == 83 || key == 115) {
+        //    printf("%d ",key);
+       // flag = 1;
+        //while (1) {
+     //   if(key!=83|| key!=115) break;
+       // if (flag == 0) break;
+        if (map[y + 1][x] != 0) {
+            return;
+        }
+        else if (y + 1 < HEI && y + 1 >= 0) {
+            y++;
+            goToPoint(x, y);
+            drw(YELLOW, YELLOW);
+            printf(" ");
+            goToPoint(x, y - 1);
+            drw(BLACK, BLACK);
+            printf(" ");
+            goToPoint(x, y);
+            Sleep(100);
+        }
+        // else flag = 0;
+    // }
+    }
+    else if (key == 87 || key == 119) {
+        // printf("%d ",key);
+       //  flag = 1;
+        // while (1) {
+      //           if(key!=87|| key!=115) break;
+          //   if (flag == 0) break;
+        if (map[y - 1][x] != 0) {
+            return;
+        }
+        else if (y - 1 < HEI && y - 1 >= 0) {
+
+            y--;
+            goToPoint(x, y);
+            drw(YELLOW, YELLOW);
+            printf(" ");
+            goToPoint(x, y + 1);
+            drw(BLACK, BLACK);
+            printf(" ");
+            goToPoint(x, y);
+            Sleep(100);
+        }
+        // else flag = 0;
+        //}
+    }
+    if (key == 68 || key == 100) {
+        //  printf("%d ",key);
+    //   flag = 1;
+     //  while (1) {
+      //if(key!=68 || key!=100) break;
+    //  if (flag == 0) break;
+        if (y == 10 && x == 16) {
+            x = 0;
+            goToPoint(x, y);
+            drw(YELLOW, YELLOW);
+            printf(" ");
+            goToPoint(16, 10);
+            drw(BLACK, BLACK);
+            printf(" ");
+            goToPoint(x, y);
+            Sleep(100);
+        }
+        else if (map[y][x + 1] != 0) {
+            return;
+        }
+        else if (x + 1 <= WID && x + 1 > 0) {
+            x++;
+            goToPoint(x, y);
+            drw(YELLOW, YELLOW);
+            printf(" ");
+            goToPoint(x - 1, y);
+            drw(BLACK, BLACK);
+            printf(" ");
+            goToPoint(x, y);
+            Sleep(100);
+        }
+        // else flag = 0;
+    // }
+    }
+    if (key == 65 || key == 97) {
+        // printf("%d ",key);
+       //  flag = 1;
+        // while (1) {
+       //          if(key!=65|| key!=97) break;
+        //     if (flag == 0) break;
+        if (y == 10 && x == 0) {
+            x = 16;
+            goToPoint(x, y);
+            drw(YELLOW, YELLOW);
+            printf(" ");
+            goToPoint(0, 10);
+            drw(BLACK, BLACK);
+            printf(" ");
+            goToPoint(x, y);
+            Sleep(100);
+        }
+        else if (map[y][x - 1] != 0) {
+            return;
+        }
+        else if (x - 1 <= WID && x - 1 >= 0) {
+            x--;
+            goToPoint(x, y);
+            drw(YELLOW, YELLOW);
+            printf(" ");
+            goToPoint(x + 1, y);
+            drw(BLACK, BLACK);
+            printf(" ");
+            goToPoint(x, y);
+            Sleep(100);
+        }
+        //  else flag = 0;
+       //}
+    }
+
+
+}
+
+int main() {
+    int i, j;
+    CursorView(0);
+    system("title pacman");
+    for (i = 0; i < HEI; i++) {
+        for (j = 0; j < WID; j++) {
+            goToPoint(j, i);
+            if (maintitle[i][j] == 1) {
+
+                drw(YELLOW, YELLOW);
+                puts(" ");
+
+            }
+        }
+
+        Sleep(50);
+    }
+   // printf("press the ENTER!");
+
+for (i = 0; i < HEI; i++) {
+        for (j = 0; j < WID; j++) {
+            drw(BLACK,BLACK);
+        }
+    }
+mov(_getch());
+
+    if (o == 1) {
+
+        for (i = 0; i < HEI; i++) {
+            for (j = 0; j < WID; j++) {
+                goToPoint(j, i);
+                if (map[i][j] == 1) {
+                    drw(BLUE, BLUE);
+                    printf(" ");
+
+                }
+            }
+            Sleep(70);
+        }
+
+        goToPoint(x, y);
+        drw(YELLOW, YELLOW);
+        puts(" ");
+
+        while (1) {
+            mov(_getch());
+
+        }
+    }
+    return 0;
+}
