@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include<Windows.h>
-#include<conio.h>
+#include <Windows.h>
+#include <conio.h>
 #include <stdio.h>
 
 #include <stdlib.h>
