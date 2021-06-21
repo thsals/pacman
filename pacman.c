@@ -9,18 +9,16 @@
 #define sero 66
 #define Ggaro 10
 #define Gsero 15
-#define sokdo 120
-int o = 0;
-int x = 25;
+#define sokdo 80
+int o = 0;      // is game start
+int x = 25; 
 int y = 46;
 int lastx = 25,lasty = 46;
 int gx = 25;
 int gy = 25;
 int zumsu = 0;
 int cnt = 0;
-int goflag = 0;
 int mode = 0;
-int redcnt = 0;
 int clear[14][43] = { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
 { 0,0,0,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
@@ -32,7 +30,7 @@ int clear[14][43] = { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 { 0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,1,1,0,0,0,0,0,0, },
 { 0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0, },
 { 0,0,1,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,1,1,0,0,0, },
-{ 0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,1,1,0,0, },
+{ 0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,0,0, },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, }, };
 int maintitle[sero][garo] = { {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
@@ -196,12 +194,7 @@ int map[sero][garo] = { {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,},
 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,},
 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,} };
-
-int way = 0;        // 1 À§ 2 µÚ 3 ¿À¸¥ 4 ¿Þ
-
-int flag = 0;
-int colorflag = 0;
-enum colorName
+enum colorName          //색깔
 {
     BLACK,
     D_BLUE,
@@ -222,8 +215,8 @@ enum colorName
     mint,
     PINK,
     ORANGE,
-};
-void CursorView(char show) {
+};     
+void CursorView(char show) {    //커서 숨기기
     HANDLE hConsole;
     CONSOLE_CURSOR_INFO ConsoleCursor;
 
@@ -235,7 +228,7 @@ void CursorView(char show) {
     SetConsoleCursorInfo(hConsole, &ConsoleCursor);
 };
 
-void gotoxy(int x, int y) {
+void gotoxy(int x, int y) {         // 커서 이동하기
     COORD Cur;
     Cur.X = x;
     Cur.Y = y;
@@ -243,13 +236,13 @@ void gotoxy(int x, int y) {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 
 }
-void drw(int bgColor, int textColor) {
+void drw(int bgColor, int textColor) {    // 배경색, 글자색 바꾸기
 
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bgColor * 16 + textColor);
 
 }
 
-void makepacright() {
+void makepacright() {       // 팩맨 오른쪽 한칸 출력
     gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
@@ -275,7 +268,7 @@ void makepacright() {
     drw(YELLOW, YELLOW);
     puts(" ");
 }
-void makepacleft() {
+void makepacleft() {            // 팩맨 왼쪽으로 한칸 출력
     gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
@@ -301,7 +294,7 @@ void makepacleft() {
     drw(YELLOW, YELLOW);
     puts(" ");
 }
-void makepacup() {
+void makepacup() {          // 팩맨 위로 한칸 출력
     gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
@@ -327,7 +320,7 @@ void makepacup() {
     drw(YELLOW, YELLOW);
     puts(" ");
 }
-void makepacdown() {
+void makepacdown() {            // 팩맨 아래로 한칸 출력
     gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
@@ -353,7 +346,7 @@ void makepacdown() {
     drw(YELLOW, YELLOW);
     puts(" ");
 }
-void makeblack() {
+void makeblack() {              // 팩맨 위치 검정색으로 출력
 
     gotoxy(x, y);
     drw(BLACK, BLACK);
@@ -383,7 +376,7 @@ void makeblack() {
     drw(BLACK, BLACK);
     puts(" ");
 }
-void makeghostblack() {
+void makeghostblack() {             //고스트 위치 검정색 출력
 
     gotoxy(gx, gy);
     drw(BLACK, BLACK);
@@ -413,7 +406,7 @@ void makeghostblack() {
     drw(BLACK, BLACK);
     puts(" ");
 }
-void makeredghost() {
+void makeredghost() {           // 고스트 찍기
     gotoxy(gx, gy);
     drw(RED, RED);
     puts(" ");
@@ -439,7 +432,7 @@ void makeredghost() {
     drw(RED, RED);
     puts(" ");
 }
-bool check(int x, int y) {
+bool check(int x, int y) {          // 갈수 있는지
     if (x - 1 == 0 && y == 0) {
         if (x + 1 == 0 && y == 0) {
             if (x == 0 && y + 1 == 0) {
@@ -459,7 +452,7 @@ bool check(int x, int y) {
     }
     else return false;
 }
-bool movecheck() {
+bool movecheck() {          // 팩맨이 움직이는지 안움직이는지
     if (lastx == x && lasty == lastx) return 1;
     return 0;
 }
@@ -468,11 +461,8 @@ void movedown();
 void moveleft();
 void moveright();
 
-void redghost() {
+void redghost() {           // 고스트 움직이기
     int i, j;
-    gotoxy(60, 60);
-    drw(BLACK, WHITE);
-    printf("%d", mode);
     if (movecheck) Sleep(sokdo);
     if (gy == y && gx == x) {
         gotoxy(0, 0);
@@ -533,8 +523,12 @@ void redghost() {
                     }
                     if (map[gy + 2][gx - i * 3] == 1) {
                         left++;
+
+
                     }
                     else  break;
+
+
                 }
                 for (int i = 0; i < 10; i++) {
                     if (map[gy][gx + i * 3 - 1] == 1) {
@@ -546,41 +540,47 @@ void redghost() {
 
                     }
                     else    break;
+
+
                 }
 
                 if (left < right) {
                     if (map[gy][gx - 2] != 1) {
-                        gx -= 3;
-                        gotoxy(gx, gy);
-                        makeredghost();
-                        gx += 3;
-                        gotoxy(gx, gy);
-                        makeghostblack();
-                        if (map[gy][gx] == 2) {
+                        if (gx - 4 > 0) {
+                            gx -= 3;
                             gotoxy(gx, gy);
-                            drw(D_YELLOW, D_YELLOW);
-                            printf(" ");
+                            makeredghost();
+                            gx += 3;
+                            gotoxy(gx, gy);
+                            makeghostblack();
+                            if (map[gy][gx] == 2) {
+                                gotoxy(gx, gy);
+                                drw(D_YELLOW, D_YELLOW);
+                                printf(" ");
+                            }
+                            gx -= 3;
+                            Sleep(sokdo);
                         }
-                        gx -= 3;
-                        Sleep(sokdo);
                     }
 
                 }
                 else {
                     if (map[gy][gx + 2] != 1) {
-                        gx += 3;
-                        gotoxy(gx, gy);
-                        makeredghost();
-                        gx -= 3;
-                        gotoxy(gx, gy);
-                        makeghostblack();
-                        if (map[gy][gx] == 2) {
+                        if (gx + 4 < garo) {
+                            gx += 3;
                             gotoxy(gx, gy);
-                            drw(D_YELLOW, D_YELLOW);
-                            printf(" ");
+                            makeredghost();
+                            gx -= 3;
+                            gotoxy(gx, gy);
+                            makeghostblack();
+                            if (map[gy][gx] == 2) {
+                                gotoxy(gx, gy);
+                                drw(D_YELLOW, D_YELLOW);
+                                printf(" ");
+                            }
+                            gx += 3;
+                            Sleep(sokdo);
                         }
-                        gx += 3;
-                        Sleep(sokdo);
                     }
                 }
 
@@ -618,6 +618,8 @@ void redghost() {
 
                     }
                     else  break;
+
+
                 }
                 for (int i = 0; i < 10; i++) {
                     if (map[gy][gx + i * 3 - 1] == 1) {
@@ -629,64 +631,76 @@ void redghost() {
 
                     }
                     else    break;
+
+
                 }
 
                 if (left < right) {
                     if (map[gy][gx - 2] != 1) {
-                        gx -= 3;
-                        gotoxy(gx, gy);
-                        makeredghost();
-                        gx += 3;
-                        gotoxy(gx, gy);
-                        makeghostblack();
-                        if (map[gy][gx] == 2) {
+                        if (gx - 4 > 0) {
+                            gx -= 3;
                             gotoxy(gx, gy);
-                            drw(D_YELLOW, D_YELLOW);
-                            printf(" ");
+                            makeredghost();
+                            gx += 3;
+                            gotoxy(gx, gy);
+                            makeghostblack();
+                            if (map[gy][gx] == 2) {
+                                gotoxy(gx, gy);
+                                drw(D_YELLOW, D_YELLOW);
+                                printf(" ");
+                            }
+                            gx -= 3;
+                            Sleep(sokdo);
                         }
-                        gx -= 3;
-                        Sleep(sokdo);
                     }
-
                 }
                 else {
                     if (map[gy][gx + 2] != 1) {
-                        gx += 3;
-                        gotoxy(gx, gy);
-                        makeredghost();
-                        gx -= 3;
-                        gotoxy(gx, gy);
-                        makeghostblack();
-                        if (map[gy][gx] == 2) {
+                        if (gx + 4 < garo) {
+                            gx += 3;
                             gotoxy(gx, gy);
-                            drw(D_YELLOW, D_YELLOW);
-                            printf(" ");
+                            makeredghost();
+                            gx -= 3;
+                            gotoxy(gx, gy);
+                            makeghostblack();
+                            if (map[gy][gx] == 2) {
+                                gotoxy(gx, gy);
+                                drw(D_YELLOW, D_YELLOW);
+                                printf(" ");
+                            }
+                            gx += 3;
+                            Sleep(sokdo);
                         }
-                        gx += 3;
-                        Sleep(sokdo);
                     }
                 }
+
+
             }
+
         }
         else mode = 1;
     }
     else {
         if (gx < x) {
-            if (map[gy][gx+2] != 1 && map[gy][gx+2] != 3) {
-                gx += 3;
-                gotoxy(gx, gy);
-                makeredghost();
-                gx -= 3;
-                gotoxy(gx, gy);
-                makeghostblack();
 
-                if (map[gy][gx] == 2) {
+            
+            if (map[gy][gx+2] != 1 && map[gy][gx+2] != 3) {
+                if (gx + 4 < garo) {
+                    gx += 3;
                     gotoxy(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
+                    makeredghost();
+                    gx -= 3;
+                    gotoxy(gx, gy);
+                    makeghostblack();
+
+                    if (map[gy][gx] == 2) {
+                        gotoxy(gx, gy);
+                        drw(D_YELLOW, D_YELLOW);
+                        printf(" ");
+                    }
+                    gx += 3;
+                    Sleep(sokdo);
                 }
-                gx += 3;
-                Sleep(sokdo);
             }
             else {
                 int up = 0, down = 0;
@@ -701,6 +715,8 @@ void redghost() {
 
                     }
                     else  break;
+
+
                 }
                 for (int i = 1; i < 10; i++) {
                     if (map[gy - i *2][gx] == 1) {
@@ -712,6 +728,8 @@ void redghost() {
 
                     }
                     else    break;
+
+
                 }
 
                 if (down < up ) {
@@ -730,6 +748,8 @@ void redghost() {
                         gy +=3;
                         Sleep(sokdo);
                     }
+                    
+
                 }
                 else {
 
@@ -747,28 +767,34 @@ void redghost() {
                         }
                         gy -= 3;
                         Sleep(sokdo);
-                    } 
+                    }
+                    
                 }
+
+
             }
+
 
         }
         
         else if(gx > x) {
             if (map[gy][gx - 2] != 1 && map[gy][gx - 2] != 3) {
-                gx -= 3;
-                gotoxy(gx, gy);
-                makeredghost();
-                gx += 3;
-                gotoxy(gx, gy);
-                makeghostblack();
-
-                if (map[gy][gx] == 2) {
+                if (gx - 4 > 0) {
+                    gx -= 3;
                     gotoxy(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
+                    makeredghost();
+                    gx += 3;
+                    gotoxy(gx, gy);
+                    makeghostblack();
+
+                    if (map[gy][gx] == 2) {
+                        gotoxy(gx, gy);
+                        drw(D_YELLOW, D_YELLOW);
+                        printf(" ");
+                    }
+                    gx -= 3;
+                    Sleep(sokdo);
                 }
-                gx -= 3;
-                Sleep(sokdo);
             }
             else {
                 int up = 0, down = 0;
@@ -780,9 +806,13 @@ void redghost() {
                     }
                     if (map[gy + i * 2][gx - 2] == 1) {
                         down++;
+
+
                     }
                     
                     else  break;
+
+
                 }
                 for (int i = 1; i < 10; i++) {
                     
@@ -794,7 +824,11 @@ void redghost() {
                         up++;
 
                     }
+                
+
                     else    break;
+
+
                 }
                 
                 if (down > up) {
@@ -813,6 +847,8 @@ void redghost() {
                         gy -= 3;
                         Sleep(sokdo);
                     }
+                    
+
                 }
                 else {
                     if (map[gy + 2][gx] != 1) {
@@ -831,6 +867,8 @@ void redghost() {
                         Sleep(sokdo);
                     }
                 }
+
+
             }
         }
 
@@ -838,10 +876,41 @@ void redghost() {
     }
     
 }
-void moveup() {
+void moveup() {         // 팩맨 위로 움직이기
     int i, j;
     while (1) {
-        if (GetAsyncKeyState(VK_DOWN)) {
+        if (gy == y && gx == x) {
+            gotoxy(0, 0);
+            for (i = 0; i < 100; i++) {
+                for (j = 0; j < 53; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            for (i = 0; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    if (over[i][j] == 1) {
+                        drw(RED, RED);
+                        printf(" ");
+                    }
+                }
+                Sleep(10);
+            }
+            for (i = 28; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            Sleep(sokdo);
+            exit(0);
+        }
+        if (GetAsyncKeyState(VK_DOWN)) {        // while로 돌려서 중간에 다른 키 입력받으면 실행
             if (map[y + 2][x] != 1) {
                 movedown();
                 break;
@@ -912,6 +981,37 @@ void moveup() {
 void movedown() {
     int i, j;
     while (1) {
+        if (gy == y && gx == x) {
+            gotoxy(0, 0);
+            for (i = 0; i < 100; i++) {
+                for (j = 0; j < 53; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            for (i = 0; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    if (over[i][j] == 1) {
+                        drw(RED, RED);
+                        printf(" ");
+                    }
+                }
+                Sleep(10);
+            }
+            for (i = 28; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            Sleep(sokdo);
+            exit(0);
+        }
         if (GetAsyncKeyState(VK_UP)) {
             if (map[y - 2][x] != 1) {
                 moveup();
@@ -934,10 +1034,12 @@ void movedown() {
 
             return;
         }
+        
         if (map[y + 2][x] == 1) {
 
             return;
         }
+
         if (map[y + 3][x] == 2) {
             map[y + 3][x] = 0;
             zumsu++;
@@ -983,6 +1085,37 @@ void movedown() {
 void moveleft() {
     int i, j;
     while (1) {
+        if (gy == y && gx == x) {
+            gotoxy(0, 0);
+            for (i = 0; i < 100; i++) {
+                for (j = 0; j < 53; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            for (i = 0; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    if (over[i][j] == 1) {
+                        drw(RED, RED);
+                        printf(" ");
+                    }
+                }
+                Sleep(10);
+            }
+            for (i = 28; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            Sleep(sokdo);
+            exit(0);
+        }
         if (GetAsyncKeyState(VK_UP)) {
             if (map[y - 2][x] != 1) {
                 moveup();
@@ -1063,6 +1196,37 @@ void moveleft() {
 void moveright() {
     int i, j;
     while (1) {
+        if (gy == y && gx == x) {
+            gotoxy(0, 0);
+            for (i = 0; i < 100; i++) {
+                for (j = 0; j < 53; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            for (i = 0; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    if (over[i][j] == 1) {
+                        drw(RED, RED);
+                        printf(" ");
+                    }
+                }
+                Sleep(10);
+            }
+            for (i = 28; i < 30; i++) {
+                for (j = 0; j < 40; j++) {
+                    gotoxy(j, i);
+                    drw(BLACK, BLACK);
+                    printf(" ");
+                }
+            }
+
+            Sleep(sokdo);
+            exit(0);
+        }
         if (GetAsyncKeyState(VK_UP)) {
             if (map[y - 2][x] != 1) {
                 moveup();
@@ -1152,11 +1316,11 @@ void moveright() {
 int main() {
 
     int i, j;
-    system("mode con: cols=70 lines=68");
-    CursorView(0);
-    system("title pacman");
+    system("mode con: cols=70 lines=68");   // 콘솔 크기
+    CursorView(0);                      
+    system("title pacman");                 // 콘솔 이름
 
-    for (i = 0; i < sero; i++) {
+    for (i = 0; i < sero; i++) {            // 메인 타이틀 출력
         for (j = 0; j < garo; j++) {
             gotoxy(j, i);
             if (maintitle[i][j] == 1) {
@@ -1174,10 +1338,10 @@ int main() {
         if (i < sero - 1) Sleep(20);
     }
     gotoxy(14, 47);
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+    drw(BLACK, WHITE);
     printf("PRESS THE SPACE BAR!");
 
-    while (1) {
+    while (1) {                             // 스페이스바 입력 받으면 게임 실행
         if (GetAsyncKeyState(VK_SPACE)) {
             system("cls");
             o = 1;
@@ -1197,7 +1361,7 @@ int main() {
 
     if (o == 1) {
 
-        for (i = 0; i < sero; i++) {
+        for (i = 0; i < sero; i++) {            // 맵출력
             for (j = 0; j < garo; j++) {
                 gotoxy(j, i);
                 if (map[i][j] == 1) {
@@ -1222,7 +1386,7 @@ int main() {
                 }
                 else if (map[i][j] == 5) {
 
-                    drw(D_SKYBLUE, D_SKYBLUE);  //시안
+                    drw(D_SKYBLUE, D_SKYBLUE); 
                     printf(" ");
                 }
                 else if (map[i][j] == 6) {
