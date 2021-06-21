@@ -1,24 +1,26 @@
-//#pragma comment (linker,"STACK: 33880000")
-#include <iostream>
+#include <stdio.h>
 #include<Windows.h>
 #include<conio.h>
 #include <stdio.h>
-#include <thread>
+
 #include <stdlib.h>
-#define WID 51
-#define HEI 66
-#define GWID 10
-#define GHEI 15
-using namespace std;
+#include <stdbool.h>
+#define garo 51
+#define sero 66
+#define Ggaro 10
+#define Gsero 15
+#define sokdo 120
 int o = 0;
 int x = 25;
 int y = 46;
+int lastx = 25,lasty = 46;
 int gx = 25;
 int gy = 25;
-// int pacman[32][41] = ;
 int zumsu = 0;
 int cnt = 0;
 int goflag = 0;
+int mode = 0;
+int redcnt = 0;
 int clear[14][43] = { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
 { 0,0,0,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
@@ -33,7 +35,7 @@ int clear[14][43] = { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 { 0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,0,0, },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, }, };
-int maintitle[HEI][WID] = { {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+int maintitle[sero][garo] = { {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 {0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 {0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,2,0,0,0,0,0,2,0,2,0,0,0,0,0,0,2,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
@@ -99,7 +101,7 @@ int maintitle[HEI][WID] = { {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,} };
-int over[50][40]{ {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+int over[50][40] = { {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,1,1,0,1,1,1,1,1,0,0,0,0,0,0,0},
 {0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,1,1,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
@@ -128,7 +130,7 @@ int over[50][40]{ {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 {0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,1,0,0,0,1,1,1,1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} };
-int map[HEI][WID] = { {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
+int map[sero][garo] = { {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,},
 {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,},
 {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,},
@@ -231,9 +233,9 @@ void CursorView(char show) {
     ConsoleCursor.dwSize = 1;
 
     SetConsoleCursorInfo(hConsole, &ConsoleCursor);
-}
+};
 
-void goToPoint(int x, int y) {
+void gotoxy(int x, int y) {
     COORD Cur;
     Cur.X = x;
     Cur.Y = y;
@@ -248,207 +250,207 @@ void drw(int bgColor, int textColor) {
 }
 
 void makepacright() {
-    goToPoint(x, y);
+    gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y);
+    gotoxy(x - 1, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    //  goToPoint(x + 1, y);
+    //  gotoxy(x + 1, y);
     //  drw(YELLOW, YELLOW);
     //  puts(" ");
-    goToPoint(x, y + 1);
+    gotoxy(x, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x, y - 1);
+    gotoxy(x, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y - 1);
+    gotoxy(x - 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y + 1);
+    gotoxy(x - 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y - 1);
+    gotoxy(x + 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y + 1);
+    gotoxy(x + 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
 }
 void makepacleft() {
-    goToPoint(x, y);
+    gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    //  goToPoint(x - 1, y);
+    //  gotoxy(x - 1, y);
    //   drw(YELLOW, YELLOW);
    //   puts(" ");
-    goToPoint(x + 1, y);
+    gotoxy(x + 1, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x, y + 1);
+    gotoxy(x, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x, y - 1);
+    gotoxy(x, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y - 1);
+    gotoxy(x - 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y + 1);
+    gotoxy(x - 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y - 1);
+    gotoxy(x + 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y + 1);
+    gotoxy(x + 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
 }
 void makepacup() {
-    goToPoint(x, y);
+    gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y);
+    gotoxy(x - 1, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y);
+    gotoxy(x + 1, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x, y + 1);
+    gotoxy(x, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    //  goToPoint(x, y - 1);
+    //  gotoxy(x, y - 1);
    //   drw(YELLOW, YELLOW);
    //   puts(" ");
-    goToPoint(x - 1, y - 1);
+    gotoxy(x - 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y + 1);
+    gotoxy(x - 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y - 1);
+    gotoxy(x + 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y + 1);
+    gotoxy(x + 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
 }
 void makepacdown() {
-    goToPoint(x, y);
+    gotoxy(x, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y);
+    gotoxy(x - 1, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y);
+    gotoxy(x + 1, y);
     drw(YELLOW, YELLOW);
     puts(" ");
-    //   goToPoint(x, y + 1);
+    //   gotoxy(x, y + 1);
      //  drw(YELLOW, YELLOW);
    //    puts(" ");
-    goToPoint(x, y - 1);
+    gotoxy(x, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y - 1);
+    gotoxy(x - 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x - 1, y + 1);
+    gotoxy(x - 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y - 1);
+    gotoxy(x + 1, y - 1);
     drw(YELLOW, YELLOW);
     puts(" ");
-    goToPoint(x + 1, y + 1);
+    gotoxy(x + 1, y + 1);
     drw(YELLOW, YELLOW);
     puts(" ");
 }
 void makeblack() {
 
-    goToPoint(x, y);
+    gotoxy(x, y);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x - 1, y);
+    gotoxy(x - 1, y);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x + 1, y);
+    gotoxy(x + 1, y);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x, y + 1);
+    gotoxy(x, y + 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x, y - 1);
+    gotoxy(x, y - 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x - 1, y - 1);
+    gotoxy(x - 1, y - 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x - 1, y + 1);
+    gotoxy(x - 1, y + 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x + 1, y - 1);
+    gotoxy(x + 1, y - 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(x + 1, y + 1);
+    gotoxy(x + 1, y + 1);
     drw(BLACK, BLACK);
     puts(" ");
 }
 void makeghostblack() {
 
-    goToPoint(gx, gy);
+    gotoxy(gx, gy);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx - 1, gy);
+    gotoxy(gx - 1, gy);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx + 1, gy);
+    gotoxy(gx + 1, gy);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx, gy + 1);
+    gotoxy(gx, gy + 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx, gy - 1);
+    gotoxy(gx, gy - 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx - 1, gy - 1);
+    gotoxy(gx - 1, gy - 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx - 1, gy + 1);
+    gotoxy(gx - 1, gy + 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx + 1, gy - 1);
+    gotoxy(gx + 1, gy - 1);
     drw(BLACK, BLACK);
     puts(" ");
-    goToPoint(gx + 1, gy + 1);
+    gotoxy(gx + 1, gy + 1);
     drw(BLACK, BLACK);
     puts(" ");
 }
 void makeredghost() {
-    goToPoint(gx, gy);
+    gotoxy(gx, gy);
     drw(RED, RED);
     puts(" ");
-    goToPoint(gx - 1, gy);
+    gotoxy(gx - 1, gy);
     drw(RED, RED);
     puts(" ");
-    goToPoint(gx + 1, gy);
+    gotoxy(gx + 1, gy);
     drw(RED, RED);
     puts(" ");
-    //   goToPoint(x, y + 1);
+    //   gotoxy(x, y + 1);
      //  drw(YELLOW, YELLOW);
    //    puts(" ");
-    goToPoint(gx, gy - 1);
+    gotoxy(gx, gy - 1);
     drw(WHITE, WHITE);
     puts(" ");
-    goToPoint(gx - 1, gy - 1);
+    gotoxy(gx - 1, gy - 1);
     drw(RED, RED);
     puts(" ");
-    goToPoint(gx - 1, gy + 1);
+    gotoxy(gx - 1, gy + 1);
     drw(RED, RED);
     puts(" ");
-    goToPoint(gx + 1, gy - 1);
+    gotoxy(gx + 1, gy - 1);
     drw(RED, RED);
     puts(" ");
-    goToPoint(gx + 1, gy + 1);
+    gotoxy(gx + 1, gy + 1);
     drw(RED, RED);
     puts(" ");
 }
@@ -472,11 +474,437 @@ bool check(int x, int y) {
     }
     else return false;
 }
+bool movecheck() {
+    if (lastx == x && lasty == lastx) return 1;
+    return 0;
+}
 void moveup();
 void movedown();
 void moveleft();
 void moveright();
 
+void redghost() {
+    int i, j;
+    gotoxy(60, 60);
+    drw(BLACK, WHITE);
+    printf("%d", mode);
+    if (movecheck) Sleep(sokdo);
+    if (gy == y && gx == x) {
+        gotoxy(0, 0);
+        for (i = 0; i < 100; i++) {
+            for (j = 0; j < 53; j++) {
+                gotoxy(j, i);
+                drw(BLACK, BLACK);
+                printf(" ");
+            }
+        }
+
+        for (i = 0; i < 30; i++) {
+            for (j = 0; j < 40; j++) {
+                gotoxy(j, i);
+                if (over[i][j] == 1) {
+                    drw(RED, RED);
+                    printf(" ");
+                }
+            }
+            Sleep(10);
+        }
+        for (i = 28; i < 30; i++) {
+            for (j = 0; j < 40; j++) {
+                gotoxy(j, i);
+                drw(BLACK, BLACK);
+                printf(" ");
+            }
+        }
+
+        Sleep(sokdo);
+        exit(0);
+    }
+    if (mode == 0) {
+        if (gy < y) {
+
+            if (map[gy + 2][gx] != 1 && map[gy + 2][gx] != 3) {
+                gy += 3;
+                gotoxy(gx, gy);
+                makeredghost();
+                gy -= 3;
+                gotoxy(gx, gy);
+                makeghostblack();
+
+                if (map[gy][gx] == 2) {
+                    gotoxy(gx, gy);
+                    drw(D_YELLOW, D_YELLOW);
+                    printf(" ");
+                }
+                gy += 3;
+                Sleep(sokdo);
+            }
+            else {
+                int left = 0, right = 0;
+                for (int i = 0; i < 10; i++) {
+                    //  if (map[y][x - i * 3] == 1 || map[y][x - i * 3] == 3) {
+                    if (map[gy][gx - i * 3 + 1] == 1) {
+                        left = 10;
+                        break;
+                    }
+                    if (map[gy + 2][gx - i * 3] == 1) {
+                        left++;
+
+
+                    }
+                    //   }
+                    else  break;
+
+
+                }
+                for (int i = 0; i < 10; i++) {
+                    //  if (map[y][x + i * 3] == 1 || map[y][x + i * 3] == 3) {
+                    if (map[gy][gx + i * 3 - 1] == 1) {
+                        right = 10;
+                        break;
+                    }
+                    if (map[gy + 2][gx + i * 3] == 1) {
+                        right++;
+
+                    }
+                    //   }
+
+                    else    break;
+
+
+                }
+
+                if (left < right) {
+                    if (map[gy][gx - 2] != 1) {
+                        gx -= 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gx += 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gx -= 3;
+                        Sleep(sokdo);
+                    }
+
+                }
+                else {
+                    if (map[gy][gx + 2] != 1) {
+                        gx += 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gx -= 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gx += 3;
+                        Sleep(sokdo);
+                    }
+                }
+
+
+            }
+
+
+        }
+        else if (gy > y) {
+            if (map[gy - 2][gx] != 1 && map[gy - 2][gx] != 3) {
+                gy -= 3;
+                gotoxy(gx, gy);
+                makeredghost();
+                gy += 3;
+                gotoxy(gx, gy);
+                makeghostblack();
+
+                if (map[gy][gx] == 2) {
+                    gotoxy(gx, gy);
+                    drw(D_YELLOW, D_YELLOW);
+                    printf(" ");
+                }
+                gy -= 3;
+                Sleep(sokdo);
+            }
+            else {
+                int left = 0, right = 0;
+                for (int i = 0; i < 10; i++) {
+                    //  if (map[y][x - i * 3] == 1 || map[y][x - i * 3] == 3) {
+                    if (map[gy][gx - i * 3 + 1] == 1) {
+                        left = 10;
+                        break;
+                    }
+                    if (map[gy - 2][gx - i * 3] == 1) {
+                        left++;
+
+                    }
+                    //   }
+                    else  break;
+
+
+                }
+                for (int i = 0; i < 10; i++) {
+                    //  if (map[y][x + i * 3] == 1 || map[y][x + i * 3] == 3) {
+                    if (map[gy][gx + i * 3 - 1] == 1) {
+                        right = 10;
+                        break;
+                    }
+                    if (map[gy - 2][gx + i * 3] == 1) {
+                        right++;
+
+                    }
+                    //   }
+
+                    else    break;
+
+
+                }
+
+                if (left < right) {
+                    if (map[gy][gx - 2] != 1) {
+                        gx -= 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gx += 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gx -= 3;
+                        Sleep(sokdo);
+                    }
+
+                }
+                else {
+                    if (map[gy][gx + 2] != 1) {
+                        gx += 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gx -= 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gx += 3;
+                        Sleep(sokdo);
+                    }
+                }
+
+
+            }
+
+        }
+        else mode = 1;
+    }
+    else {
+        if (gx < x) {
+
+            
+            if (map[gy][gx+2] != 1 && map[gy][gx+2] != 3) {
+                gx += 3;
+                gotoxy(gx, gy);
+                makeredghost();
+                gx -= 3;
+                gotoxy(gx, gy);
+                makeghostblack();
+
+                if (map[gy][gx] == 2) {
+                    gotoxy(gx, gy);
+                    drw(D_YELLOW, D_YELLOW);
+                    printf(" ");
+                }
+                gx += 3;
+                Sleep(sokdo);
+            }
+            else {
+                int up = 0, down = 0;
+                for (int i = 1; i < 10; i++) {
+                    //  if (map[y][x - i * 3] == 1 || map[y][x - i * 3] == 3) {
+                    if (map[gy + i *2][gx] == 1) {
+                        down = 10;
+                        break;
+                    }
+                    if (map[gy +i*2][gx+2] == 1) {
+                        down++;
+
+
+                    }
+                    //   }
+                    else  break;
+
+
+                }
+                for (int i = 1; i < 10; i++) {
+                    //  if (map[y][x + i * 3] == 1 || map[y][x + i * 3] == 3) {
+                    if (map[gy - i *2][gx] == 1) {
+                        up = 10;
+                        break;
+                    }
+                    if (map[gy-i*2][gx+2] == 1) {
+                        up++;
+
+                    }
+                    //   }
+
+                    else    break;
+
+
+                }
+
+                if (down < up ) {
+                    if (map[gy+2][gx] != 1) {
+                        gy += 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gy -= 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gy +=3;
+                        Sleep(sokdo);
+                    }
+                    
+
+                }
+                else {
+
+                    if (map[gy - 2][gx] != 1) {
+                        gy -= 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gy += 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gy -= 3;
+                        Sleep(sokdo);
+                    }
+                    
+                }
+
+
+            }
+
+
+        }
+        
+        else if(gx > x) {
+            if (map[gy][gx - 2] != 1 && map[gy][gx - 2] != 3) {
+                gx -= 3;
+                gotoxy(gx, gy);
+                makeredghost();
+                gx += 3;
+                gotoxy(gx, gy);
+                makeghostblack();
+
+                if (map[gy][gx] == 2) {
+                    gotoxy(gx, gy);
+                    drw(D_YELLOW, D_YELLOW);
+                    printf(" ");
+                }
+                gx -= 3;
+                Sleep(sokdo);
+            }
+            else {
+                int up = 0, down = 0;
+                for (int i = 1; i < 10; i++) {
+                
+                    if (map[gy + i * 2][gx] == 1) {
+                        down = 10;
+                        break;
+                    }
+                    if (map[gy + i * 2][gx - 2] == 1) {
+                        down++;
+
+
+                    }
+                    
+                    else  break;
+
+
+                }
+                for (int i = 1; i < 10; i++) {
+                    
+                    if (map[gy - i * 2][gx] == 1) {
+                        up = 10;
+                        break;
+                    }
+                    if (map[gy - i * 2][gx - 2] == 1) {
+                        up++;
+
+                    }
+                
+
+                    else    break;
+
+
+                }
+                
+                if (down > up) {
+                    if (map[gy - 2][gx] != 1) {
+                        gy -= 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gy += 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gy -= 3;
+                        Sleep(sokdo);
+                    }
+                    
+
+                }
+                else {
+                    if (map[gy + 2][gx] != 1) {
+                        gy += 3;
+                        gotoxy(gx, gy);
+                        makeredghost();
+                        gy -= 3;
+                        gotoxy(gx, gy);
+                        makeghostblack();
+                        if (map[gy][gx] == 2) {
+                            gotoxy(gx, gy);
+                            drw(D_YELLOW, D_YELLOW);
+                            printf(" ");
+                        }
+                        gy += 3;
+                        Sleep(sokdo);
+                    }
+                }
+
+
+            }
+        }
+
+        else mode = 0;
+    }
+    
+}
 void moveup() {
     int i, j;
     while (1) {
@@ -515,7 +943,7 @@ void moveup() {
             map[y - 3][x] = 0;
             zumsu++;
             if (zumsu >= cnt) {
-                goToPoint(0, 0);
+                gotoxy(0, 0);
                 for (i = 0; i < 100; i++) {
                     for (j = 0; j < 100; j++) {
                         drw(BLACK, BLACK);
@@ -527,7 +955,7 @@ void moveup() {
                         if (clear[i][j] == 1) {
                             drw(YELLOW, YELLOW);
                             printf(" ");
-                            goToPoint(j, i);
+                            gotoxy(j, i);
                         }
                     }
                 }
@@ -535,7 +963,7 @@ void moveup() {
                 j = 0;
                 for (i; i < 50; i++) {
                     for (j; j < 50; j++) {
-                        goToPoint(j, i);
+                        gotoxy(j, i);
                         drw(BLACK, BLACK);
                         printf(" ");
                     }
@@ -543,15 +971,15 @@ void moveup() {
                 exit(0);
             }
         }
-
+        redghost();
         y -= 3;
-        //    goToPoint(x, y);
+        //    gotoxy(x, y);
         makepacup();
         y += 3;
         makeblack();
         y -= 3;
-        //   goToPoint(x, y);
-        Sleep(160);
+        //   gotoxy(x, y);
+        Sleep(sokdo);
 
         // else flag = 0;
     }
@@ -591,7 +1019,7 @@ void movedown() {
             map[y + 3][x] = 0;
             zumsu++;
             if (zumsu >= cnt) {
-                goToPoint(0, 0);
+                gotoxy(0, 0);
                 for (i = 0; i < 100; i++) {
                     for (j = 0; j < 100; j++) {
                         drw(BLACK, BLACK);
@@ -603,7 +1031,7 @@ void movedown() {
                         if (clear[i][j] == 1) {
                             drw(YELLOW, YELLOW);
                             printf(" ");
-                            goToPoint(j, i);
+                            gotoxy(j, i);
                         }
                     }
                 }
@@ -611,7 +1039,7 @@ void movedown() {
                 j = 0;
                 for (i; i < 50; i++) {
                     for (j; j < 50; j++) {
-                        goToPoint(j, i);
+                        gotoxy(j, i);
                         drw(BLACK, BLACK);
                         printf(" ");
                     }
@@ -620,14 +1048,14 @@ void movedown() {
             }
         }
 
-
+        redghost();
         y += 3;
         makepacdown();
         y -= 3;
         makeblack();
         y += 3;
-        //   goToPoint(x, y);
-        Sleep(160);
+        //   gotoxy(x, y);
+        Sleep(sokdo);
 
         // else flag = 0;
     }
@@ -658,13 +1086,13 @@ void moveleft() {
         }
         if (y == 31 && x == 1) {
             x = 49;
-            //   goToPoint(x, y);
+            //   gotoxy(x, y);
             makepacleft();
             x = 1;
             makeblack();
             x = 49;
-            //   goToPoint(x, y);
-            Sleep(160);
+            //   gotoxy(x, y);
+            Sleep(sokdo);
         }
         if (map[y][x - 3] == 1) {
 
@@ -678,7 +1106,7 @@ void moveleft() {
             map[y][x - 3] = 0;
             zumsu++;
             if (zumsu >= cnt) {
-                goToPoint(0, 0);
+                gotoxy(0, 0);
                 for (i = 0; i < 100; i++) {
                     for (j = 0; j < 100; j++) {
                         drw(BLACK, BLACK);
@@ -690,7 +1118,7 @@ void moveleft() {
                         if (clear[i][j] == 1) {
                             drw(YELLOW, YELLOW);
                             printf(" ");
-                            goToPoint(j, i);
+                            gotoxy(j, i);
                         }
                     }
                 }
@@ -698,7 +1126,7 @@ void moveleft() {
                 j = 0;
                 for (i; i < 50; i++) {
                     for (j; j < 50; j++) {
-                        goToPoint(j, i);
+                        gotoxy(j, i);
                         drw(BLACK, BLACK);
                         printf(" ");
                     }
@@ -707,16 +1135,16 @@ void moveleft() {
             }
         }
 
-
+        redghost();
 
         x -= 3;
-        // goToPoint(x, y);
+        // gotoxy(x, y);
         makepacleft();
         x += 3;
         makeblack();
         x -= 3;
-        //  goToPoint(x, y);
-        Sleep(160);
+        //  gotoxy(x, y);
+        Sleep(sokdo);
 
         //  else flag = 0;
     }
@@ -755,7 +1183,7 @@ void moveright() {
             makeblack();
             x = 1;
 
-            Sleep(160);
+            Sleep(sokdo);
         }
         if (map[y][x + 3] == 1) {
 
@@ -770,7 +1198,7 @@ void moveright() {
             map[y][x + 3] = 0;
             zumsu++;
             if (zumsu >= cnt) {
-                goToPoint(0, 0);
+                gotoxy(0, 0);
                 for (i = 0; i < 100; i++) {
                     for (j = 0; j < 100; j++) {
                         drw(BLACK, BLACK);
@@ -782,7 +1210,7 @@ void moveright() {
                         if (clear[i][j] == 1) {
                             drw(YELLOW, YELLOW);
                             printf(" ");
-                            goToPoint(j, i);
+                            gotoxy(j, i);
                         }
                     }
                 }
@@ -790,7 +1218,7 @@ void moveright() {
                 j = 0;
                 for (i; i < 50; i++) {
                     for (j; j < 50; j++) {
-                        goToPoint(j, i);
+                        gotoxy(j, i);
                         drw(BLACK, BLACK);
                         printf(" ");
                     }
@@ -798,7 +1226,7 @@ void moveright() {
                 exit(0);
             }
         }
-
+        redghost();
 
         x += 3;
 
@@ -807,209 +1235,12 @@ void moveright() {
         makeblack();
         x += 3;
 
-        Sleep(160);
+        Sleep(sokdo);
 
 
     }
 }
-void redghost() {
-    int i, j;
-    if(gy == y && gx == x) {
-        goToPoint(0, 0);
-        for (i = 0; i < 100; i++) {
-            for (j = 0; j < 53; j++) {
-                goToPoint(j, i);
-                drw(BLACK, BLACK);
-                printf(" ");
-            }
-        }
-        
-        for (i = 0; i < 30; i++) {
-            for (j = 0; j < 40; j++) {
-                goToPoint(j, i);
-                if (over[i][j] == 1) {
-                    drw(RED, RED);
-                    printf(" ");
-                }
-            }
-            Sleep(3);
-        }
-        for (i = 28; i < 30; i++) {
-            for (j = 0; j < 40; j++) {
-                goToPoint(j, i);
-                drw(BLACK, BLACK);
-                printf(" ");
-            }
-        }
 
-        Sleep(10);
-        exit(0);
-    }
-    if (gy < y) {
-        if (map[gy + 2][gx] != 1 && map[gy + 2][gx] != 3) {
-            gy += 3;
-            goToPoint(gx, gy);
-            makeredghost();
-            gy -= 3;
-            goToPoint(gx, gy);
-            makeghostblack();
-
-            if (map[gy][gx] == 2) {
-                goToPoint(gx, gy);
-                drw(D_YELLOW, D_YELLOW);
-                printf(" ");
-            }
-            gy += 3;
-            Sleep(160);
-        }
-        else if (gx < x) {
-            if (map[gy][gx + 2] != 1) {
-                gx += 3;
-                goToPoint(gx, gy);
-                makeredghost();
-                gx -= 3;
-                goToPoint(gx, gy);
-                makeghostblack();
-                if (map[gy][gx] == 2) {
-                    goToPoint(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
-                }
-                gx += 3;
-                Sleep(160);
-            }
-            else if (map[gy][gx - 2] != 1) {
-                gx -= 3;
-                goToPoint(gx, gy);
-                makeredghost();
-                gx += 3;
-                goToPoint(gx, gy);
-                makeghostblack();
-                if (map[gy][gx] == 2) {
-                    goToPoint(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
-                }
-                gx -= 3;
-                Sleep(160);
-            }
-        }
-        else {
-            if (map[gy][gx + 2] != 1) {
-                gx += 3;
-                goToPoint(gx, gy);
-                makeredghost();
-                gx -= 3;
-                goToPoint(gx, gy);
-                makeghostblack();
-                if (map[gy][gx] == 2) {
-                    goToPoint(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
-                }
-                gx += 3;
-                Sleep(160);
-            }
-         //   else redghost();
-        }
-    }
-    else if (gy > y) {
-        if (map[gy - 2][gx] != 1) {
-            gy -= 3;
-            goToPoint(gx, gy);
-            makeredghost();
-            gy += 3;
-            goToPoint(gx, gy);
-            makeghostblack();
-
-            if (map[gy][gx] == 2) {
-                goToPoint(gx, gy);
-                drw(D_YELLOW, D_YELLOW);
-                printf(" ");
-            }
-            gy -= 3;
-            Sleep(160);
-        }
-        else if (gx < x) {
-            if (map[gy][gx - 2] != 1) {
-                gx -= 3;
-                goToPoint(gx, gy);
-                makeredghost();
-                gx += 3;
-                goToPoint(gx, gy);
-                makeghostblack();
-                if (map[gy][gx] == 2) {
-                    goToPoint(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
-                }
-                gx -= 3;
-                Sleep(160);
-            }
-       //     else redghost();
-
-        }
-        else {
-            if (map[gy][gx + 2] != 1) {
-                gx += 3;
-                goToPoint(gx, gy);
-                makeredghost();
-                gx -= 3;
-                goToPoint(gx, gy);
-                makeghostblack();
-                if (map[gy][gx] == 2) {
-                    goToPoint(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
-                }
-                gx += 3;
-                Sleep(160);
-            }
-        //    else redghost();
-        }
-    }
-    else {
-        if (gx > x) {
-            if (map[gy][gx - 2] != 1) {
-                gx -= 3;
-                goToPoint(gx, gy);
-                makeredghost();
-                gx += 3;
-                goToPoint(gx, gy);
-                makeghostblack();
-                if (map[gy][gx] == 2) {
-                    goToPoint(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
-                }
-                gx -= 3;
-                Sleep(160);
-            }
-            else {
-
-            }
-
-        }
-        else {
-            if (map[gy][gx + 2] != 1) {
-                gx += 3;
-                goToPoint(gx, gy);
-                makeredghost();
-                gx -= 3;
-                goToPoint(gx, gy);
-                makeghostblack();
-                if (map[gy][gx] == 2) {
-                    goToPoint(gx, gy);
-                    drw(D_YELLOW, D_YELLOW);
-                    printf(" ");
-                }
-                gx += 3;
-                Sleep(160);
-            }
-         //   else redghost();
-        }
-    }
-}
 int main() {
 
     int i, j;
@@ -1017,9 +1248,9 @@ int main() {
     CursorView(0);
     system("title pacman");
 
-    for (i = 0; i < HEI; i++) {
-        for (j = 0; j < WID; j++) {
-            goToPoint(j, i);
+    for (i = 0; i < sero; i++) {
+        for (j = 0; j < garo; j++) {
+            gotoxy(j, i);
             if (maintitle[i][j] == 1) {
 
                 drw(YELLOW, YELLOW);
@@ -1032,9 +1263,9 @@ int main() {
             }
         }
 
-        if (i < HEI - 1) Sleep(20);
+        if (i < sero - 1) Sleep(20);
     }
-    goToPoint(14, 47);
+    gotoxy(14, 47);
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
     printf("PRESS THE SPACE BAR!");
 
@@ -1046,7 +1277,7 @@ int main() {
         if (o == 1) {
             for (i = 0; i < 100; i++) {
                 for (j = 0; j < 100; j++) {
-                    goToPoint(j, i);
+                    gotoxy(j, i);
                     drw(BLACK, BLACK);
                     printf(" ");
                 }
@@ -1058,9 +1289,9 @@ int main() {
 
     if (o == 1) {
 
-        for (i = 0; i < HEI; i++) {
-            for (j = 0; j < WID; j++) {
-                goToPoint(j, i);
+        for (i = 0; i < sero; i++) {
+            for (j = 0; j < garo; j++) {
+                gotoxy(j, i);
                 if (map[i][j] == 1) {
                     drw(BLUE, BLUE);
                     printf(" ");
@@ -1101,18 +1332,15 @@ int main() {
             Sleep(15);
         }
 
-        makeredghost();
-        goToPoint(56, 4);
+        gotoxy(56, 4);
 
         makepacright();
         while (1) {
-            //thread t1(redghost);
-              redghost();
+            redghost();
             if (GetAsyncKeyState(VK_RIGHT)) moveright();
             if (GetAsyncKeyState(VK_LEFT)) moveleft();
             if (GetAsyncKeyState(VK_UP)) moveup();
             if (GetAsyncKeyState(VK_DOWN)) movedown();
-           // t1.join();
 
 
         }
